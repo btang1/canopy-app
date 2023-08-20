@@ -5,8 +5,8 @@
 !    Developed by : Dr. Beiming Tang based on Dr. Rick Saylor's ACCESS model version 3.1.0
 !============================================================================================================
 
-module ACCESS_Modules
-    use ACCESS_Constants
+module canopy_drydep_modules
+    use canopy_drydep_constants
     implicit none
     
     public MolecDiff, EffHenrysLawCoeff,ReactivityParam, &
@@ -470,6 +470,6 @@ function gtor(gz, pmbi,tki)
     return
 end function gtor
 
-end module ACCESS_Modules
+end module canopy_drydep_modules
 
 
