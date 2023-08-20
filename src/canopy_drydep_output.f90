@@ -1,6 +1,6 @@
-program test
-    use ACCESS_Constants, only: rk=>dp, npts, ninteg
-    use DryDep, only: GetDryDepExCoeffs
+program canopy_drydep_output
+    use canopy_drydep_constants, only: rk=>dp, npts, ninteg
+    use canopy_drydep_main, only: GetDryDepExCoeffs
 
     implicit none
 
@@ -13,4 +13,4 @@ program test
     print *, "vd after call:"
     print "(*(g0))", ((vd(i,j), " ", j = 1, ninteg), new_line("A"), i = 1, npts)
 
-end program test
+end program canopy_drydep_output
