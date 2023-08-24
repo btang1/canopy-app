@@ -76,13 +76,12 @@ OBJS :=\
  canopy_eddy_mod.o \
  canopy_bioparm_mod.o \
  canopy_bioemi_mod.o \
- canopy_calcs.o \
- canopy_write_txt.o \
- canopy_dealloc.o \
  canopy_drydep_constants.o \
  canopy_drydep_modules.o \
  canopy_drydep_main.o \
- canopy_drydep_output.o \
+ canopy_calcs.o \
+ canopy_write_txt.o \
+ canopy_dealloc.o \
  canopy_app.o
 
 ifeq ($(NC), 0)
