@@ -5,9 +5,9 @@
 !    developed by : Dr. Beiming Tang based on Dr. Rick D. Saylor's ACCESS model version 3.1.0
 !=======================================================================================================
 
-module DryDep
-    use ACCESS_Constants
-    use ACCESS_Modules
+module canopy_drydep_main
+    use canopy_drydep_constants
+    use canopy_drydep_modules
 
     implicit none
 
