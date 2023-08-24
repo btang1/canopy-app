@@ -20,36 +20,36 @@ contains
 !============================================================================
 
 subroutine GetDryDepExCoeffs(vd)
-    integer(kind=i4)                                       :: i                       !i is layer
-    integer(kind=i4)                                       :: l                       !l is species
-    real(kind = dp)                                        :: mdiffl                  !molecular diffusivity of species l in air (cm^2/s)
-    real(kind = dp)                                        :: relhumi                 !relative humidity (%)
-    real(kind = dp)                                        :: hstarl                  !effective Henry's Law coefficient (M/atm)
-    real(kind=dp)                                          :: f01                     !reactivity parameter (0-1) !Wesely's reactivity parameter (dimensionless)
-    real(kind = dp)                                        :: srad                    !Solar radiation at canopy top (W/m^2)
+    integer(kind=ik)                                       :: i                       !i is layer
+    integer(kind=ik)                                       :: l                       !l is species
+    real(kind = rk)                                        :: mdiffl                  !molecular diffusivity of species l in air (cm^2/s)
+    real(kind = rk)                                        :: relhumi                 !relative humidity (%)
+    real(kind = rk)                                        :: hstarl                  !effective Henry's Law coefficient (M/atm)
+    real(kind=rk)                                          :: f01                     !reactivity parameter (0-1) !Wesely's reactivity parameter (dimensionless)
+    real(kind = rk)                                        :: srad                    !Solar radiation at canopy top (W/m^2)
     character(len=10)                                      :: rs_select               !Selection of stomatal resistance algorithm
-    real(kind=dp)                                          :: hc                      !hc is canopy height (cm)
-    real(kind=dp),dimension(npts)                          :: ppfd                    !vertical profile of photosynthetic photon flux (umol/m^2-s) at current simulation time
-    real(kind=dp),dimension(npts)                          :: lai                     !layer leaf area index of canopy (cm^2*leaf/cm^2)
-    real(kind=dp),dimension(npts)                          :: tk                      !vertical profile of temperature at current simulation time (K)
-    real(kind=dp),dimension(npts)                          :: pmb                     !vertical profile of pressure at current simulation time (mb)
-    real(kind=dp),dimension(npts)                          :: qh                      !vertical profile of specific humidity at current simulation time (g/kg)
-    real(kind=dp),dimension(npts)                          :: ubar                    !vertical profile of mean wind speed at current simulation time (cm/s)
-    real(kind = dp),dimension(npts,ninteg)                 :: rb                      !leaf boundary resistance (s/cm)
-    real(kind = dp),dimension(npts,ninteg)                 :: rc                      !cuticular resistance (s/cm)
-    real(kind = dp),dimension(npts,ninteg)                 :: rm                      !mesophyll resistance (s/cm)
-    real(kind = dp),dimension(npts,ninteg)                 :: rs                      !stomatal resistance (s/cm)
-    real(kind = dp),dimension(npts)                        :: rs_wgt                  !sun/shade weighted leaf stomatal resistance (s/cm)
-    real(kind=dp),dimension(npts,ninteg), intent(inout)    :: vd                      !dry deposition exchange coefficient (cm/s)
-    real(kind = dp),dimension(npts,ninteg)                 :: gp                      !dry deposition compensation point (mole/cm^3)
-    real(kind = dp)                                        :: rnum
-    real(kind = dp)                                        :: rden
-    real(kind = dp)                                        :: rlx
-    real(kind = dp)                                        :: vdlx
-    real(kind=dp),dimension(npts)                          :: fshd                    !shaded fraction of canopy
-    real(kind=dp),dimension(npts)                          :: fsun                    !sunlit fraction of canopy
-    real(kind=dp),dimension(npts)                          :: gs_sun                  !leaf stomatal conductance in sublit fraction (mol/m^2-s)
-    real(kind=dp),dimension(npts)                          :: gs_shd 
+    real(kind=rk)                                          :: hc                      !hc is canopy height (cm)
+    real(kind=rk),dimension(npts)                          :: ppfd                    !vertical profile of photosynthetic photon flux (umol/m^2-s) at current simulation time
+    real(kind=rk),dimension(npts)                          :: lai                     !layer leaf area index of canopy (cm^2*leaf/cm^2)
+    real(kind=rk),dimension(npts)                          :: tk                      !vertical profile of temperature at current simulation time (K)
+    real(kind=rk),dimension(npts)                          :: pmb                     !vertical profile of pressure at current simulation time (mb)
+    real(kind=rk),dimension(npts)                          :: qh                      !vertical profile of specific humidity at current simulation time (g/kg)
+    real(kind=rk),dimension(npts)                          :: ubar                    !vertical profile of mean wind speed at current simulation time (cm/s)
+    real(kind = rk),dimension(npts,ninteg)                 :: rb                      !leaf boundary resistance (s/cm)
+    real(kind = rk),dimension(npts,ninteg)                 :: rc                      !cuticular resistance (s/cm)
+    real(kind = rk),dimension(npts,ninteg)                 :: rm                      !mesophyll resistance (s/cm)
+    real(kind = rk),dimension(npts,ninteg)                 :: rs                      !stomatal resistance (s/cm)
+    real(kind = rk),dimension(npts)                        :: rs_wgt                  !sun/shade weighted leaf stomatal resistance (s/cm)
+    real(kind=rk),dimension(npts,ninteg), intent(inout)    :: vd                      !dry deposition exchange coefficient (cm/s)
+    real(kind = rk),dimension(npts,ninteg)                 :: gp                      !dry deposition compensation point (mole/cm^3)
+    real(kind = rk)                                        :: rnum
+    real(kind = rk)                                        :: rden
+    real(kind = rk)                                        :: rlx
+    real(kind = rk)                                        :: vdlx
+    real(kind=rk),dimension(npts)                          :: fshd                    !shaded fraction of canopy
+    real(kind=rk),dimension(npts)                          :: fsun                    !sunlit fraction of canopy
+    real(kind=rk),dimension(npts)                          :: gs_sun                  !leaf stomatal conductance in sublit fraction (mol/m^2-s)
+    real(kind=rk),dimension(npts)                          :: gs_shd 
     
     !nighttime 1am, get input data from 5m to 40m, every 5m interval
 !    pmb    = (/1012.66     , 1012.07     , 1011.48     , 1010.891    , 1010.292    , 1009.702    , 1009.111    , 1008.522    /)              !calc use barometric formula
@@ -76,7 +76,7 @@ subroutine GetDryDepExCoeffs(vd)
     gs_shd = (/2.88E-01, 0.192159E+00, 0.156742E+00, 0.182532E+00, 0.188411E+00, 0.198841E+00, 0.195128E+00, 0.000000E+00/)              !data from CANACC
 
     rs_select = 'zhang_df'                                             !To Do: make this selection via input file
-    srad = ppfd(int(hc)+1)/4.57_dp                                      !cannopy top PPFD converted from (umol/m^2-s) to (W/m^2)
+    srad = ppfd(int(hc)+1)/4.57_rk                                      !cannopy top PPFD converted from (umol/m^2-s) to (W/m^2)
     do l = 1,ninteg                                                     !ninteg is integrated # of species in ACCESS model
         do i = 1,npts                                                   !npts is # of vertical layers
             if (lai(i) > 0.0) then                                      !within canopy
@@ -105,12 +105,12 @@ subroutine GetDryDepExCoeffs(vd)
                 gp(i,l) = gpla(i,l)                                      !compensation point concentration (mole/cm^3)
            
             else                                                         !out of canopy
-                rb(i,l) = 0.0_dp
-                rc(i,l) = 0.0_dp
-                rm(i,l) = 0.0_dp
-                rs(i,l) = 0.0_dp
-                vd(i,l) = 0.0_dp
-                gp(i,l) = 0.0_dp
+                rb(i,l) = 0.0_rk
+                rc(i,l) = 0.0_rk
+                rm(i,l) = 0.0_rk
+                rs(i,l) = 0.0_rk
+                vd(i,l) = 0.0_rk
+                gp(i,l) = 0.0_rk
 
             end if
         end do
@@ -124,15 +124,15 @@ end subroutine GetDryDepExCoeffs
 !==================================================================
 
 subroutine GetSoilDryDepExCoeffs()
-    integer(kind = i4)                :: l                       !l is species
-    real(kind = dp)                   :: mdiffl                  !molecular diffusivity (cm^2/s)
-    real(kind = dp)                   :: tsoilk                  !soil/litter temperature (K)
-    real(kind = dp),dimension(ninteg) :: rsoill                  !resistance to diffusion thru soil pore space for chemical species (s/cm)
-    real(kind = dp)                   :: rbg                     !ground boundary layer resistance (s/cm)
-    real(kind = dp),dimension(ninteg) :: vs                      !soil exchange coefficients (cm/s)
-    real(kind = dp)                   :: ubarg
-    real(kind=dp),dimension(npts)     :: pmb
-    real(kind=dp),dimension(npts)     :: ubar
+    integer(kind = ik)                :: l                       !l is species
+    real(kind = rk)                   :: mdiffl                  !molecular diffusivity (cm^2/s)
+    real(kind = rk)                   :: tsoilk                  !soil/litter temperature (K)
+    real(kind = rk),dimension(ninteg) :: rsoill                  !resistance to diffusion thru soil pore space for chemical species (s/cm)
+    real(kind = rk)                   :: rbg                     !ground boundary layer resistance (s/cm)
+    real(kind = rk),dimension(ninteg) :: vs                      !soil exchange coefficients (cm/s)
+    real(kind = rk)                   :: ubarg
+    real(kind=rk),dimension(npts)     :: pmb
+    real(kind=rk),dimension(npts)     :: ubar
 
     pmb    = (/1.01266     , 1.01207     , 1.01148     , 1.010891    , 1.010292    , 1.009702    , 1.009111    , 1.008522    /)              !calc use barometric formula
     ubar   = (/0.540616E+01, 0.688076E+01, 0.898461E+01, 0.121621E+02, 0.174182E+02, 0.278164E+02, 0.861199E+02, 0.861199E+02/)              !data from CANACC
@@ -150,4 +150,4 @@ subroutine GetSoilDryDepExCoeffs()
     return
 end subroutine GetSoilDryDepExCoeffs
 
-end module DryDep
+end module canopy_drydep_main

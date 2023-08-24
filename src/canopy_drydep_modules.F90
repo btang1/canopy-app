@@ -29,17 +29,17 @@ contains
 !                            specific humidity, temperature and pressure
 !=========================================================================
 function RelativeHumidity(tki,pmbi,qhi)
-    real(kind = dp), intent(in) :: tki
-    real(kind = dp), intent(in) :: pmbi
-    real(kind = dp), intent(in) :: qhi
-    real(kind = dp)             :: RelativeHumidity
-    real(kind = dp)             :: e
-    real(kind = dp)             :: es
-    real(kind = dp)             :: qhd
-    real(kind = dp)             :: pkpa
-    real(kind = dp)             :: rhi
-    real(kind = dp),parameter   :: rhmin = 0.1
-    real(kind = dp),parameter   :: rhmax = 99.0
+    real(kind = rk), intent(in) :: tki
+    real(kind = rk), intent(in) :: pmbi
+    real(kind = rk), intent(in) :: qhi
+    real(kind = rk)             :: RelativeHumidity
+    real(kind = rk)             :: e
+    real(kind = rk)             :: es
+    real(kind = rk)             :: qhd
+    real(kind = rk)             :: pkpa
+    real(kind = rk)             :: rhi
+    real(kind = rk),parameter   :: rhmin = 0.1
+    real(kind = rk),parameter   :: rhmax = 99.0
 
     qhd  = 0.001*qhi
     pkpa = 0.1*pmbi
@@ -57,14 +57,14 @@ end function RelativeHumidity
 !                     temperature and pressure
 !==========================================================================
 function MolecDiff(ispec, tkx, pmbx)
-    integer(kind=i4), intent(in) :: ispec     !dummy id for species
-    real(kind=dp), intent(in)    :: tkx
-    real(kind=dp), intent(in)    :: pmbx
-    real(kind=dp)                :: MolecDiff
-    real(kind=dp),dimension(ntotal)  ::mdiffstp
+    integer(kind=ik), intent(in) :: ispec     !dummy id for species
+    real(kind=rk), intent(in)    :: tkx
+    real(kind=rk), intent(in)    :: pmbx
+    real(kind=rk)                :: MolecDiff
+    real(kind=rk),dimension(ntotal)  ::mdiffstp
     
     call SetMolecDiffSTP(mdiffstp)
-    MolecDiff = mdiffstp(ispec)*(1013.25_dp/pmbx)*((tkx/298.15_dp)**1.81)
+    MolecDiff = mdiffstp(ispec)*(1013.25_rk/pmbx)*((tkx/298.15_rk)**1.81)
 
     return
 end function MolecDiff
@@ -76,11 +76,11 @@ end function MolecDiff
 !source: Tracy (1980)
 !=========================================================================
 function mdiffh2o(tki,pmbi)
-    real(kind = dp), intent(in) :: tki
-    real(kind = dp), intent(in) :: pmbi
-    real(kind = dp)             :: mdiffh2o
+    real(kind = rk), intent(in) :: tki
+    real(kind = rk), intent(in) :: pmbi
+    real(kind = rk)             :: mdiffh2o
 
-    mdiffh2o = 0.226_dp*((tki/273.15_dp)**1.81_dp)*(1000.0_dp/pmbi)
+    mdiffh2o = 0.226_rk*((tki/273.15_rk)**1.81_rk)*(1000.0_rk/pmbi)
 
     return
 end function mdiffh2o
@@ -90,9 +90,9 @@ end function mdiffh2o
 !function ReactivityParam - calculate reactivity parameters (dimensionless)
 !==========================================================================
 function ReactivityParam(ispec)
-    integer(kind=i4), intent(in)    :: ispec   !dummy id for species
-    real(kind=dp)                   :: ReactivityParam
-    real(kind=dp),dimension(ntotal) :: f0
+    integer(kind=ik), intent(in)    :: ispec   !dummy id for species
+    real(kind=rk)                   :: ReactivityParam
+    real(kind=rk),dimension(ntotal) :: f0
 
     call SetReactivityParams(f0)
     ReactivityParam = f0(ispec)
@@ -106,9 +106,9 @@ end function ReactivityParam
 !                             have not include temperature dependence yet
 !========================================================================
 function EffHenrysLawCoeff(ispec)
-    integer(kind=i4), intent(in)    :: ispec  !dummy id for species
-    real(kind=dp)                   :: EffHenrysLawCoeff
-    real(kind=dp),dimension(ntotal) :: hstar     
+    integer(kind=ik), intent(in)    :: ispec  !dummy id for species
+    real(kind=rk)                   :: EffHenrysLawCoeff
+    real(kind=rk),dimension(ntotal) :: hstar     
 
     call SetEffHenrysLawCoeffs(hstar)
     EffHenrysLawCoeff = hstar(ispec)
@@ -123,15 +123,15 @@ end function EffHenrysLawCoeff
 !Source - Sakagichi & Zeng (2009)
 !================================================================================================================
 function SoilResist(mdiffl)
-    real(kind=dp), intent(in)  :: mdiffl       !molecular diffusivity of species in air (cm^2/s)
-    real(kind=dp)              :: SoilResist   !Soil resistance (s/cm)
-    real(kind=dp)              :: xe           !temporary variable
-    real(kind=dp)              :: ldry         !diffusion distance through the soil (cm)
-    real(kind=dp)              :: mdiffp       !effective diffusivity of species through the soil (cm^2/s)
+    real(kind=rk), intent(in)  :: mdiffl       !molecular diffusivity of species in air (cm^2/s)
+    real(kind=rk)              :: SoilResist   !Soil resistance (s/cm)
+    real(kind=rk)              :: xe           !temporary variable
+    real(kind=rk)              :: ldry         !diffusion distance through the soil (cm)
+    real(kind=rk)              :: mdiffp       !effective diffusivity of species through the soil (cm^2/s)
 
     xe = (1.0-(stheta/sattheta))**5.0
     ldry = dsoil*(exp(xe)-1.0)/1.7183
-    ldry = max(0.0,ldry)
+    ldry = max(0.0_rk,ldry)
 
     mdiffp = mdiffl*sattheta*sattheta*(1.0-(rtheta/sattheta))**(2.0+3.0/sbcoef)
     SoilResist = ldry/mdiffp
@@ -146,10 +146,10 @@ end function SoilResist
 !Source - Schuepp (1977) 
 !=====================================================================================
 function SoilRbg(ubarg)
-    real(kind=dp), intent(in)  :: ubarg           !mean wind speed in the 1st model layer (cm/s)
-    real(kind=dp)              :: SoilRbg         !Boundary layer resistance at ground surface (s/cm)
-    real(kind=dp), parameter   :: rbgmax = 1.67   !maximum ground surface boundary layer resistance (s/cm)
-    real(kind=dp)              :: rbg             !temporary variable for boundary layer resistance (s/cm)
+    real(kind=rk), intent(in)  :: ubarg           !mean wind speed in the 1st model layer (cm/s)
+    real(kind=rk)              :: SoilRbg         !Boundary layer resistance at ground surface (s/cm)
+    real(kind=rk), parameter   :: rbgmax = 1.67   !maximum ground surface boundary layer resistance (s/cm)
+    real(kind=rk)              :: rbg             !temporary variable for boundary layer resistance (s/cm)
 
     rbg = 11.534/(0.14*ubarg)                     !assume Sc=0.7,del0/zl = 0.02 and ustar = 0.14*ubar (Weber,1999)
     SoilRbg = min(rbgmax,rbg)
@@ -165,11 +165,11 @@ end function SoilRbg
 !       - ustar = 0.14*ubar from Weber (1999)
 !===================================================================
 function rbl(mdiffl, ubari)
-    real(kind=dp)               :: rbl            !leaf boundary layer resistance (s/cm)
-    real(kind=dp), intent(in)   :: mdiffl         !molecular diffusivity of species in air (cm^2/s)
-    real(kind=dp), intent(in)   :: ubari          !mean wind speed at layer i (cm/s)
+    real(kind=rk)               :: rbl            !leaf boundary layer resistance (s/cm)
+    real(kind=rk), intent(in)   :: mdiffl         !molecular diffusivity of species in air (cm^2/s)
+    real(kind=rk), intent(in)   :: ubari          !mean wind speed at layer i (cm/s)
     
-    rbl = 10.53_dp/((mdiffl**0.666667)*ubari)
+    rbl = 10.53_rk/((mdiffl**0.666667)*ubari)
 
     return
 end function rbl
@@ -181,10 +181,10 @@ end function rbl
 !Source - Wesely (1989)
 !===============================================================
 function rcl(hstarl,f01)
-    real(kind=dp), intent(in)   :: hstarl         ! effective Henry's law coefficient (M/atm)
-    real(kind=dp), intent(in)   :: f01            ! reactivity parameter (0-1)
-    real(kind=dp)               :: rcl            ! cuticular resistance (s/cm)
-    real(kind=dp), parameter    :: rcref=20.0     ! rc for ozone (s/cm) for deciduous forest
+    real(kind=rk), intent(in)   :: hstarl         ! effective Henry's law coefficient (M/atm)
+    real(kind=rk), intent(in)   :: f01            ! reactivity parameter (0-1)
+    real(kind=rk)               :: rcl            ! cuticular resistance (s/cm)
+    real(kind=rk), parameter    :: rcref=20.0     ! rc for ozone (s/cm) for deciduous forest
 
     rcl = rcref/((hstarl*1.0D-05)+f01)
 
@@ -198,11 +198,11 @@ end function rcl
 !Source - Wesely (1989)
 !===============================================================
 function rml(hstarl,f01)
-    real(kind=dp), intent(in)   :: hstarl          ! effective Henry's law coefficient (M/atm)
-    real(kind=dp), intent(in)   :: f01             ! reactivity parameter (0-1)
-    real(kind=dp)               :: rml             ! mesophyll resistance (s/cm)
+    real(kind=rk), intent(in)   :: hstarl          ! effective Henry's law coefficient (M/atm)
+    real(kind=rk), intent(in)   :: f01             ! reactivity parameter (0-1)
+    real(kind=rk)               :: rml             ! mesophyll resistance (s/cm)
 
-    rml = 1.0_dp/((hstarl/3000.0_dp)+100.0_dp*f01)
+    rml = 1.0_rk/((hstarl/3000.0_rk)+100.0_rk*f01)
 
     return
 end function rml
@@ -214,11 +214,11 @@ end function rml
 !Source - ???
 !==================================================================================
 function gpla(ilev,lsp)
-    integer(kind=i4), intent(in) :: ilev           !ilev is layer
-    integer(kind=i4), intent(in) :: lsp            !lsp is species
-    real(kind=dp)                :: gpla
+    integer(kind=ik), intent(in) :: ilev           !ilev is layer
+    integer(kind=ik), intent(in) :: lsp            !lsp is species
+    real(kind=rk)                :: gpla
 
-    gpla = 0.0_dp                                  !dummy stub for now
+    gpla = 0.0_rk                                  !dummy stub for now
 
     return
 end function gpla
@@ -232,31 +232,31 @@ end function gpla
 !       - 'bvpd' by Wolfe and Thornton (2011)
 !======================================================================
 function rs_zhang_df(mdiffl, tki, pmbi, ppfdi, srad, relhumi)
-    real(kind = dp), intent(in) :: mdiffl            !molecular diffusivity of trace species in air (cm^2/s)
-    real(kind = dp), intent(in) :: tki               !temperature
-    real(kind = dp), intent(in) :: pmbi              !air pressure (mb)
-    real(kind = dp), intent(in) :: ppfdi             !photosynthetic photon flux (umol/m^2-s)
-    real(kind = dp), intent(in) :: srad              !solar irradiation (W/m^2)
-    real(kind = dp), intent(in) :: relhumi           !relative humidity (%)
-    real(kind = dp)             :: rs_zhang_df       !stomatal resistance (s/cm)
-    real(kind = dp), parameter  :: rsmin =1.0        !minimum leaf stomatal resistance (s/cm) for deciduous forest
-    real(kind = dp), parameter  :: rsmax =10000.     !maximum leaf stomatal resistance (s/cm) (stoma are closed)
-    real(kind = dp), parameter  :: brsp = 196.5      !empirical constant (umol/m^2-s) for deciduous forest
-    real(kind = dp), parameter  :: tmin = 0.0        !temperature correction parameter-deciduous forest
-    real(kind = dp), parameter  :: tmax = 45.0       !temperature correction parameter-deciduous forest
-    real(kind = dp), parameter  :: topt = 27.0       !temperature correction parameter-deciduous forest
-    real(kind = dp), parameter  :: bvpd = 0.10       !empirical constant for VPD correction-deciduous forest
-    real(kind = dp), parameter  :: phic1 = -1.9      !empirical constant for water stress correction-deciduous forest
-    real(kind = dp), parameter  :: phic2 = -2.5      !empirical constant for water stress correction-deciduous forest
-    real(kind = dp)             :: cft
-    real(kind = dp)             :: cfvpd
-    real(kind = dp)             :: cfphi
-    real(kind = dp)             :: tcel
-    real(kind = dp)             :: ft1
-    real(kind = dp)             :: ft2
-    real(kind = dp)             :: et
-    real(kind = dp)             :: vpd
-    real(kind = dp)             :: phi
+    real(kind = rk), intent(in) :: mdiffl            !molecular diffusivity of trace species in air (cm^2/s)
+    real(kind = rk), intent(in) :: tki               !temperature
+    real(kind = rk), intent(in) :: pmbi              !air pressure (mb)
+    real(kind = rk), intent(in) :: ppfdi             !photosynthetic photon flux (umol/m^2-s)
+    real(kind = rk), intent(in) :: srad              !solar irradiation (W/m^2)
+    real(kind = rk), intent(in) :: relhumi           !relative humidity (%)
+    real(kind = rk)             :: rs_zhang_df       !stomatal resistance (s/cm)
+    real(kind = rk), parameter  :: rsmin =1.0        !minimum leaf stomatal resistance (s/cm) for deciduous forest
+    real(kind = rk), parameter  :: rsmax =10000.     !maximum leaf stomatal resistance (s/cm) (stoma are closed)
+    real(kind = rk), parameter  :: brsp = 196.5      !empirical constant (umol/m^2-s) for deciduous forest
+    real(kind = rk), parameter  :: tmin = 0.0        !temperature correction parameter-deciduous forest
+    real(kind = rk), parameter  :: tmax = 45.0       !temperature correction parameter-deciduous forest
+    real(kind = rk), parameter  :: topt = 27.0       !temperature correction parameter-deciduous forest
+    real(kind = rk), parameter  :: bvpd = 0.10       !empirical constant for VPD correction-deciduous forest
+    real(kind = rk), parameter  :: phic1 = -1.9      !empirical constant for water stress correction-deciduous forest
+    real(kind = rk), parameter  :: phic2 = -2.5      !empirical constant for water stress correction-deciduous forest
+    real(kind = rk)             :: cft
+    real(kind = rk)             :: cfvpd
+    real(kind = rk)             :: cfphi
+    real(kind = rk)             :: tcel
+    real(kind = rk)             :: ft1
+    real(kind = rk)             :: ft2
+    real(kind = rk)             :: et
+    real(kind = rk)             :: vpd
+    real(kind = rk)             :: phi
 
     !temperature correction
     tcel = tki - 273.15
@@ -266,15 +266,15 @@ function rs_zhang_df(mdiffl, tki, pmbi, ppfdi, srad, relhumi)
     cft  = ft1*(ft2**et)
 
     !water vapor pressure defit correction
-    vpd  = esat(tki)*(1.0_dp - (relhumi/100.0_dp))
-    cfvpd= 1.0_dp - bvpd*vpd
+    vpd  = esat(tki)*(1.0_rk - (relhumi/100.0_rk))
+    cfvpd= 1.0_rk - bvpd*vpd
 
     !water stress correction
-    phi  = -0.72_dp - 0.0013_dp*srad
+    phi  = -0.72_rk - 0.0013_rk*srad
     cfphi= (phi-phic2)/(phic1-phic2)
 
     if (ppfdi >0.0) then
-        rs_zhang_df = rsmin*(1.0_dp+brsp/ppfdi)*mdiffh2o(tki,pmbi)/(mdiffl*cft*cfvpd*cfphi)
+        rs_zhang_df = rsmin*(1.0_rk+brsp/ppfdi)*mdiffh2o(tki,pmbi)/(mdiffl*cft*cfvpd*cfphi)
     else
         rs_zhang_df = rsmax                         !nighttime, stoma are closed
     endif
@@ -288,16 +288,16 @@ end function rs_zhang_df
 !==================================================================
 
 subroutine CalcWeightedProfiles(rs_wgt,fsun,fshd,gs_sun,gs_shd,pmb,tk)    !Beiming modify this code from CalcWeightedProfiles from CanopyPhysics.f90
-    integer(kind=i4)                             :: i                     !i is layer
-    real(kind=dp),dimension(npts),intent(out)    :: rs_wgt
-    real(kind=dp),dimension(npts),intent(in)     :: fsun
-    real(kind=dp),dimension(npts)                :: rs_sun
-    real(kind=dp),dimension(npts),intent(in)     :: fshd
-    real(kind=dp),dimension(npts)                :: rs_shd
-    real(kind=dp),dimension(npts),intent(in)     :: gs_sun
-    real(kind=dp),dimension(npts),intent(in)     :: gs_shd    
-    real(kind=dp),dimension(npts),intent(in)     :: pmb 
-    real(kind=dp),dimension(npts),intent(in)     :: tk    
+    integer(kind=ik)                             :: i                     !i is layer
+    real(kind=rk),dimension(npts),intent(out)    :: rs_wgt
+    real(kind=rk),dimension(npts),intent(in)     :: fsun
+    real(kind=rk),dimension(npts)                :: rs_sun
+    real(kind=rk),dimension(npts),intent(in)     :: fshd
+    real(kind=rk),dimension(npts)                :: rs_shd
+    real(kind=rk),dimension(npts),intent(in)     :: gs_sun
+    real(kind=rk),dimension(npts),intent(in)     :: gs_shd    
+    real(kind=rk),dimension(npts),intent(in)     :: pmb 
+    real(kind=rk),dimension(npts),intent(in)     :: tk    
    
     do i = npts,1,-1
 !        ppfd_wgt(i) = fun(i) *ppfd_sun(i) + fshd(i)*ppfd_shd(i)
@@ -344,9 +344,9 @@ end subroutine CalcWeightedProfiles
 !notes - valid over -30 C <= T <= 35 C
 !==============================================================================================
 function esat(tki)
-    real(kind=dp),intent(in) :: tki    !temperature,unit = K
-    real(kind=dp)            :: esat   !satuaration vapor pressure,unit = kPa
-    real(kind=dp)            :: tc     !temperature, unit = C
+    real(kind=rk),intent(in) :: tki    !temperature,unit = K
+    real(kind=rk)            :: esat   !satuaration vapor pressure,unit = kPa
+    real(kind=rk)            :: tc     !temperature, unit = C
 
     tc = tki - 273.15
     esat = 0.6112*exp(17.67*tc/(tc+243.5))
@@ -359,7 +359,7 @@ end function esat
 !                           0 deg C and 1 atm 
 !=====================================================================================
 subroutine SetMolecDiffSTP(mdiffstp)
-    real(kind = dp),dimension(ntotal),intent(out)  :: mdiffstp       !molecular diffusivities of species in air at 0degC and 1 atm [cm^2/s]
+    real(kind = rk),dimension(ntotal),intent(out)  :: mdiffstp       !molecular diffusivities of species in air at 0degC and 1 atm [cm^2/s]
 !    real(kind = dp), parameter         :: mdiffstp_default = 0.100   !default value of mdiffstp (cm^2/s) with no reliable data
 !    integer(kind=i4)                   :: l                          !l is species
     
@@ -390,7 +390,7 @@ end subroutine SetMolecDiffSTP
 !========================================================
 subroutine SetReactivityParams(f0)
 !    integer(kind=i4)                              :: l               !l is species
-    real(kind = dp),dimension(ntotal),intent(out) :: f0
+    real(kind = rk),dimension(ntotal),intent(out) :: f0
 !    real(kind=dp),parameter                       :: f0_default = 0.0
     
 !    do l=1,ntotal     !ntotal is total species in ACCESS based on chosen chemical mechanim, including transported species
@@ -421,7 +421,7 @@ end subroutine SetReactivityParams
 !====================================================================
 subroutine SetEffHenrysLawCoeffs(hstar)
 !    integer(kind=i4)                            :: l                  !l is species
-    real(kind=dp),dimension(ntotal),intent(out) :: hstar
+    real(kind=rk),dimension(ntotal),intent(out) :: hstar
 !    real(kind=dp),parameter                     :: hstar_default = 1.000
     
 !    do l = 1,ntotal    !ntotal is total species in ACCESS based on chosen chemical mechanim, including transported species
@@ -457,12 +457,12 @@ end subroutine SetEffHenrysLawCoeffs
 !notes - assumes non-zero value for gz!
 !==================================================================
 function gtor(gz, pmbi,tki)
-    real(kind=dp), intent(in)     :: gz                 !conductance, mol/m^2-s
-    real(kind=dp), intent(in)     :: pmbi               !air pressure, mb
-    real(kind=dp), intent(in)     :: tki                !temperature, K
-    real(kind=dp)                 :: gtor               !resistance, s/s
-    real(kind=dp)                 :: gms                !conductance, m/s
-    real(kind=dp), parameter      :: rgas=8.205D-05     !ideal gas constant, m^3-atm/K-mol
+    real(kind=rk), intent(in)     :: gz                 !conductance, mol/m^2-s
+    real(kind=rk), intent(in)     :: pmbi               !air pressure, mb
+    real(kind=rk), intent(in)     :: tki                !temperature, K
+    real(kind=rk)                 :: gtor               !resistance, s/s
+    real(kind=rk)                 :: gms                !conductance, m/s
+    real(kind=rk), parameter      :: rgas=8.205D-05     !ideal gas constant, m^3-atm/K-mol
 
     gms = gz*(rgas*tki)/(pmbi/1013.)
     gtor = 1.0/gms
@@ -470,6 +470,6 @@ function gtor(gz, pmbi,tki)
     return
 end function gtor
 
-end module ACCESS_Modules
+end module canopy_drydep_modules
 
 
