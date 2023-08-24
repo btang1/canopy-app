@@ -5,7 +5,7 @@
 !    Developed by : Dr. Beiming Tang based on Dr. Rick Saylor's ACCESS model version 3.1.0
 !============================================================================================================
 
-module ACCESS_Constants
+module canopy_drydep_constants
     use, intrinsic :: iso_fortran_env, only: dp=>real64, i4=>int32
     implicit none
 
