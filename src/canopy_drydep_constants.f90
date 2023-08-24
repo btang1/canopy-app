@@ -5,7 +5,7 @@
 !    Developed by : Dr. Beiming Tang based on Dr. Rick Saylor's ACCESS model version 3.1.0
 !============================================================================================================
 
-module canopy_drydep_constants
+module ACCESS_Constants
     use, intrinsic :: iso_fortran_env, only: dp=>real64, i4=>int32
     implicit none
 
@@ -30,4 +30,4 @@ module canopy_drydep_constants
     real(kind=dp), parameter                :: rtheta = 0.05     !residual volumetic soil water content (m^3/m^3)
     real(kind=dp), parameter                :: sbcoef = 0.2      !clapp and hornberger exponent
 
-end module canopy_drydep_constants
+end module ACCESS_Constants

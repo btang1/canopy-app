@@ -5,8 +5,8 @@
 !    Developed by : Dr. Beiming Tang based on Dr. Rick Saylor's ACCESS model version 3.1.0
 !============================================================================================================
 
-module canopy_drydep_modules
-    use canopy_drydep_constants
+module ACCESS_Modules
+    use ACCESS_Constants
     implicit none
     
     public MolecDiff, EffHenrysLawCoeff,ReactivityParam, &
@@ -437,12 +437,12 @@ subroutine SetEffHenrysLawCoeffs(hstar)
 
 !    hstar = (/0.0019, 0.0120, 0.0103, 2.6D+05, 1.0D+07, 3.2D+13, 1.0D+14, 9.8D-04, 8.4D+04, 1.4D-03,  &
 !             6.9D+02, 3.0D+02, 2.2D+02, 0.0380, 0.0380, 0.0380, 3.9D+01, 6.9D+02, 5.6D+03, 2.0D+03,  & 
-!             5.2D+02, 2.0D+03, 4.0D+03, 7.0D+07, 7.0D+07, 1.0D+04, 5.0D+03, 5.0D+03, 6.0D+03, 6.0D+03,  &
+!             5.2D+02, 2.0D+03, 4.0D+04, 7.0D+07, 7.0D+07, 1.0D+04, 5.0D+03, 5.0D+03, 6.0D+03, 6.0D+03,  &
 !             5.0D+03 /)
 
     hstar = (/1.9D-03, 1.2D-02,1.03D-02, 2.6D+05, 1.0D+07, 3.2D+13, 1.0D+14, 9.8D-04, 8.4D+04, 1.4D-03,  &
               6.9D+02, 3.0D+02, 2.2D+02, 3.8D-02, 3.8D-02, 3.8D-02, 3.9D+01, 6.9D+02, 5.6D+03, 2.0D+03,  &
-              5.2D+02, 2.0D+03, 4.0D+03, 7.0D+07, 7.0D+07, 1.0D+04, 5.0D+03, 5.0D+03, 6.0D+03, 6.0D+03,  &
+              5.2D+02, 2.0D+03, 4.0D+04, 7.0D+07, 7.0D+07, 1.0D+04, 5.0D+03, 5.0D+03, 6.0D+03, 6.0D+03,  &
               5.0D+03 /)
 
 !species (NO2, O3)
@@ -470,6 +470,6 @@ function gtor(gz, pmbi,tki)
     return
 end function gtor
 
-end module canopy_drydep_modules
+end module ACCESS_Modules
 
 
